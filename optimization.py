@@ -118,7 +118,10 @@ def hillclimb(domain, costf):
     print "%s, cost = %s" % (sol, costf(sol))
     print "----------"
 
-    #Create list of neighboring solutions
+    #Create list of neighboring solutions.
+    #A "neighboring solution" is a list that is the same as
+    #a list except for one of it's items is either greater or
+    #less by 1
     neighbors = []
     for j in range(len(domain)):
 
@@ -130,29 +133,30 @@ def hillclimb(domain, costf):
 
       print "%s len neighbors = %s" % (j + 1, len(neighbors))
 
-    #See what the best solution amongst the neighbors is
+    ######################################
+    #The purpose of this block is to try and find a better cost
+    #from among the neighbors of the current best solution
     current = costf(sol)
     best = current
     print "Current best cost = %s" % current
-    
+
     for j in range(len(neighbors)):
+
       cost = costf(neighbors[j])
       if cost < best:
         best = cost
         oldsol = sol
         sol = neighbors[j]
-        print "We found a better configuration: %s, cost = %s" % (sol, best)
-        print "(compared to                     %s" % oldsol
+        print "We found a better configuration at %s of %s:" % (j + 1, len(neighbors))
+        print "new: %s, cost = %s" % (sol, best)
+        print "old: %s" % oldsol
 
-    #If there's no improvement, then we've reached the bottom
+    #If there's no improvement, then we've reached the bottom of the "hill"
     if best == current:
+      print "There was no improvement"
       break
+    ######################################
 
   return sol
-
-
-
-
-
 
 
