@@ -161,7 +161,15 @@ def hillclimb(domain, costf):
 
 #The annealing method seems to be a way of determining the riskiness
 #of choosing a worse solution in the hopes that it'll yield a better 
-#solution ultimately.
+#solution ultimately. You start out very open to risk - considering
+#that you've begun in an arbitrary place anyway so what's to 
+#loose, right? - but as you go on you become more risk-averse. Time
+#running out/temperature decreasing might have something to do
+#with it too ...
+
+#This config produces consistently low costs
+#def annealingoptimize(domain, costf, T=1000000.0, cool=0.99, step=3):
+
 def annealingoptimize(domain, costf, T=10000.0, cool=0.95, step=1):
   #Initialize the values randomly
   vec = [random.randint(domain[i][0], domain[i][1])
