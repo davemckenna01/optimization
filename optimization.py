@@ -36,7 +36,7 @@ def printschedule(r):
     print '%10s%10s %5s-%5s $%3s %5s-%5s $%3s' % (name, origin,
                                                   out[0], out[1], out[2],
                                                   ret[0], ret[1], ret[2])
-
+#The cost fn
 def schedulecost(sol):
   totalprice = 0
   latestarrival = 0
@@ -82,3 +82,21 @@ def schedulecost(sol):
   if latestarrival < earliestdep: totalprice += 50
 
   return totalprice + totalwait
+
+def randomoptimize(domain, costf):
+  best = 999999999
+  bestr = None
+  for i in range(100000):
+    #Create a random solution
+    r = [random.randint(domain[i][0], domain[i][1])
+         for j in range(len(domain))]
+
+    #Get the cost
+    cost = costf(r)
+
+    #Compare it to the best one so far
+    if cost < best:
+      best = cost
+      bestr = r
+
+    return r
