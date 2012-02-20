@@ -159,4 +159,70 @@ def hillclimb(domain, costf):
 
   return sol
 
+#The annealing method seems to be a way of determining the riskiness
+#of choosing a worse solution in the hopes that it'll yield a better 
+#solution ultimately.
+def annealingoptimize(domain, costf, T=10000.0, cool=0.95, step=1):
+  #Initialize the values randomly
+  vec = [random.randint(domain[i][0], domain[i][1])
+         for i in range(len(domain))]
+
+  while T > 0.1:
+    #Choose one of the indices
+    i = random.randint(0, len(domain) - 1)
+
+    #Choose a direction to change it
+    dir = random.randint(-step,step)
+
+    #Create a new list with one of the values changed
+    vecb = vec[:]
+    vecb[i] += dir
+    if vecb[i] < domain[i][0]: vecb[i] = domain[i][0]
+    elif vecb[i] > domain[i][1]: vecb[i] = domain[i][1]
+
+    #Calculate the current cost and the new cost
+    ea = costf(vec)
+    eb = costf(vecb)
+
+    print "Temperature: %s" % T
+
+    print "Vector A cost = %s, Vector B cost = %s" % (ea, eb)
+
+    #Calculate the probability cutoff
+    p = pow(math.e, (-eb-ea) / T)
+
+    print "Probability cutoff = pow(math.e, (-eb-ea) / T)"
+    print "= pow(%s, (%s) / %s) = %s" % (math.e, (-eb-ea), T, p)
+
+    print "Old vector: %s, cost %s" % (vec, ea)
+    print "New vector: %s, cost %s" % (vecb, eb)
+
+    #Is it better, or does it make the probability cutoff?
+    if eb < ea:
+      print "New vector is BETTER"
+      print "--------------------"
+      vec = vecb
+    else:
+
+      rand = random.random()
+      #p is simply the probability something will be as expected,
+      #and to actually decide to risk trying it you need to flip a
+      #coin a few times. That's what the randomness is for here. 
+      #It's for ACTING on something (acting on the probability?).
+
+      #Also, Here "Acceptable" and "Not acceptable" really means "I'm willing to
+      #risk it and "I'm not willing to risk it"
+      if rand < p:
+        print "New vector is WORSE, but ................... ACCEPTABLE"
+        vec = vecb
+        print "Here's why: Random number %s is < probability cutoff %s" % (rand, p)
+      else:
+        print "New vector is WORSE, and NOT acceptable"
+        print "Here's why: Random number %s is > probability cutoff %s" % (rand, p)
+      print "--------------------"
+
+    #Decrease the temperature
+    T = T * cool
+
+  return vec
 
