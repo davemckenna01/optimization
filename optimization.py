@@ -11,6 +11,8 @@ people = [('Seymour', 'BOS'),
           ('Buddy', 'ORD'),
           ('Les', 'OMA')]
 
+dom = [(0, 8)] * (len(people) * 2)
+
 #LaGuardia airport in New York
 destination='LGA'
 
@@ -88,7 +90,7 @@ def randomoptimize(domain, costf):
   bestr = None
   for i in range(100000):
     #Create a random solution
-    r = [random.randint(domain[i][0], domain[i][1])
+    r = [random.randint(domain[j][0], domain[j][1])
          for j in range(len(domain))]
 
     #Get the cost
@@ -100,3 +102,57 @@ def randomoptimize(domain, costf):
       bestr = r
 
     return r
+
+def hillclimb(domain, costf):
+  #Create a random solution
+  sol = [random.randint(domain[j][0], domain[j][1])
+         for j in range(len(domain))]
+
+  count = 0
+  #Main loop
+  while 1:
+    count += 1
+    print "----------"
+    print "Try #%s" % count
+    print "----------"
+    print "%s, cost = %s" % (sol, costf(sol))
+    print "----------"
+
+    #Create list of neighboring solutions
+    neighbors = []
+    for j in range(len(domain)):
+
+      #One away in each direction
+      if sol[j] > domain[j][0]:
+        neighbors.append(sol[0:j] + [sol[j] - 1] + sol[j+1:])
+      if sol[j] < domain[j][1]:
+        neighbors.append(sol[0:j] + [sol[j] + 1] + sol[j+1:])
+
+      print "%s len neighbors = %s" % (j + 1, len(neighbors))
+
+    #See what the best solution amongst the neighbors is
+    current = costf(sol)
+    best = current
+    print "Current best cost = %s" % current
+    
+    for j in range(len(neighbors)):
+      cost = costf(neighbors[j])
+      if cost < best:
+        best = cost
+        oldsol = sol
+        sol = neighbors[j]
+        print "We found a better configuration: %s, cost = %s" % (sol, best)
+        print "(compared to                     %s" % oldsol
+
+    #If there's no improvement, then we've reached the bottom
+    if best == current:
+      break
+
+  return sol
+
+
+
+
+
+
+
