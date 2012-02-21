@@ -18,12 +18,14 @@ destination='LGA'
 
 flights={}
 
+"""
 for line in file('schedule.txt'):
   origin, dest, depart, arrive, price = line.strip().split(',')
   flights.setdefault((origin, dest), [])
 
   #Add details to the list of possible flights
   flights[(origin, dest)].append((depart, arrive, int(price)))
+"""
 
 def getminutes(t):
   x = time.strptime(t, '%H:%M')
