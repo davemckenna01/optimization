@@ -170,7 +170,8 @@ def hillclimb(domain, costf):
 #This config produces consistently low costs
 #def annealingoptimize(domain, costf, T=1000000.0, cool=0.99, step=3):
 
-def annealingoptimize(domain, costf, T=10000.0, cool=0.95, step=1):
+#Discovery: bigger steps result in more consistently lower costs
+def annealingoptimize(domain, costf, T=10000.0, cool=0.95, step=8):
   #Initialize the values randomly
   vec = [random.randint(domain[i][0], domain[i][1])
          for i in range(len(domain))]
