@@ -251,13 +251,12 @@ def geneticoptimize(domain, costf, popsize=50, step=1,
     else:
       return vec[0:i] + [vec[i] - step] + vec[i+1:]
 
-
   # Crossover Operation
   def crossover(r1,r2):
     i=random.randint(1,len(domain)-2)
     return r1[0:i]+r2[i:]
 
-  # Build the initial population
+  # Build the initial population randomly
   pop=[]
   for i in range(popsize):
     vec=[random.randint(domain[i][0],domain[i][1]) 
@@ -267,30 +266,42 @@ def geneticoptimize(domain, costf, popsize=50, step=1,
   # How many winners from each generation?
   topelite=int(elite*popsize)
 
-  # Main loop 
+  #Main loop - this is where new populations (or "generations" in the
+  #genetic metaphor) are derrived from the fittest of previous ones
   for i in range(maxiter):
+    #Rank the current population
     scores=[(costf(v),v) for v in pop]
     scores.sort()
     ranked=[v for (s,v) in scores]
+    #########
 
-    # Start with the pure winners
+    #Create a new population (or generation in the metaphor)
+    #consisting at first of only the "fittest" elite
     pop=ranked[0:topelite]
 
-    # Add mutated and bred forms of the winners
+    ###########################
+    #Then we add mutated and bred forms of those "fittest" elite
+    #to the new population (or generation)
+    mutations=0
+    breedings=0
     while len(pop)<popsize:
       if random.random()<mutprob:
 
         # Mutation
+        mutations += 1
         c=random.randint(0,topelite)
         pop.append(mutate(ranked[c]))
+
       else:
 
         # Crossover
+        breedings += 1
         c1=random.randint(0,topelite)
         c2=random.randint(0,topelite)
         pop.append(crossover(ranked[c1],ranked[c2]))
+    ##########################
 
-    # Print current best score
-    print scores[0][0], scores[0][1]
+    #Print current best score
+    print "The fittest: %s %s - mutations and breedings in this gen: m %s b %s" % (scores[0][0], scores[0][1], mutations, breedings)
 
   return scores[0][1]
